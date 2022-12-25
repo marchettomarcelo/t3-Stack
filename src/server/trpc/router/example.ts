@@ -13,9 +13,11 @@ export const exampleRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.example.findMany();
   }),
-  olaMundo: publicProcedure.query(() => {
+  olaMundo: publicProcedure.query(async ({ ctx }) => {
+    const nome = await ctx.prisma.teste.findMany();
+    
     return {
-      greetings: "Olá mundo",
+      greetings: nome,
     };
   }),
 });
