@@ -35,4 +35,19 @@ export const exampleRouter = router({
     const msgs = await ctx.prisma.teste.findMany();
     return msgs;
   }),
+
+  deleteMsg: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const resp = await ctx.prisma.teste.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      return resp;
+    }),
 });

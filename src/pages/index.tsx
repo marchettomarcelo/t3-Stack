@@ -14,11 +14,27 @@ const Home: NextPage = () => {
     },
   });
 
+  const deleteMessage = trpc.example.deleteMsg.useMutation({
+    onSuccess: ()=>{
+      msgs.refetch()
+    }
+  });
+
   const [formData, setFormData] = useState("oi");
 
   function handleSubmit() {
     addi.mutate({ msg: formData });
   }
+
+  function handleDelete(e: any) {
+
+    const idMessage:string = e.target.id
+
+    deleteMessage.mutate({
+      id :idMessage
+    })
+  }
+
 
   return (
     <>
@@ -40,7 +56,11 @@ const Home: NextPage = () => {
 
         {msgs &&
           msgs.data?.map((mensagem) => {
-            return <p>{mensagem.msg}</p>;
+            return (
+              <p key={mensagem.id} id={mensagem.id} onClick={handleDelete}>
+                {mensagem.msg}
+              </p>
+            );
           })}
       </main>
     </>
