@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 
 import { router, publicProcedure } from "../trpc";
 
@@ -15,9 +15,24 @@ export const exampleRouter = router({
   }),
   olaMundo: publicProcedure.query(async ({ ctx }) => {
     const nome = await ctx.prisma.teste.findMany();
-    
+
     return {
       greetings: nome,
     };
+  }),
+  addMsg: publicProcedure
+    .input(z.object({ msg: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const ret = await ctx.prisma.teste.create({
+        data: {
+          msg: input.msg,
+        },
+      });
+
+      return ret;
+    }),
+  allMsgs: publicProcedure.query(async ({ ctx }) => {
+    const msgs = await ctx.prisma.teste.findMany();
+    return msgs;
   }),
 });
