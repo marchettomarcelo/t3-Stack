@@ -15,9 +15,9 @@ const Home: NextPage = () => {
   });
 
   const deleteMessage = trpc.example.deleteMsg.useMutation({
-    onSuccess: ()=>{
-      msgs.refetch()
-    }
+    onSuccess: () => {
+      msgs.refetch();
+    },
   });
 
   const [formData, setFormData] = useState("oi");
@@ -27,14 +27,12 @@ const Home: NextPage = () => {
   }
 
   function handleDelete(e: any) {
-
-    const idMessage:string = e.target.id
+    const idMessage: string = e.target.id;
 
     deleteMessage.mutate({
-      id :idMessage
-    })
+      id: idMessage,
+    });
   }
-
 
   return (
     <>
@@ -51,7 +49,7 @@ const Home: NextPage = () => {
           onChange={(e) => setFormData(e.target.value)}
         />
         <button className="border-4 border-black" onClick={handleSubmit}>
-          mandar
+          mandar msg
         </button>
 
         {msgs &&
@@ -62,9 +60,36 @@ const Home: NextPage = () => {
               </p>
             );
           })}
+        <AuthShowcase />
       </main>
     </>
   );
 };
 
 export default Home;
+
+const AuthShowcase: React.FC = () => {
+  const { data: sessionData } = useSession();
+
+  const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
+    undefined, // no input
+    { enabled: sessionData?.user !== undefined }
+  );
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <p className="text-center text-2xl text-black">
+        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {secretMessage && <span> - {secretMessage}</span>}
+      </p>
+      <button
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-black no-underline transition hover:bg-white/20"
+        onClick={sessionData ? () => signOut() : () => signIn()}
+      >
+        {sessionData ? "Sign out" : "Sign in"}
+      </button>
+
+      {sessionData?.user?.image && <img src={sessionData.user.image} alt="" />}
+    </div>
+  );
+};
