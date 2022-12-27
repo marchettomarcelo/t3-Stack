@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
@@ -61,8 +60,11 @@ const Home: NextPage = () => {
           {msgs &&
             msgs.data?.map((mensagem) => {
               return (
-                <div className="flex  cursor-pointer flex-row justify-between rounded-md border bg-zinc-50 p-4 shadow-md">
-                  <p key={mensagem.id} id={mensagem.id} onClick={handleDelete}>
+                <div
+                  key={mensagem.id}
+                  className="flex  cursor-pointer flex-row justify-between rounded-md border bg-zinc-50 p-4 shadow-md"
+                >
+                  <p id={mensagem.id} onClick={handleDelete}>
                     {mensagem.msg}
                   </p>
                   <svg
