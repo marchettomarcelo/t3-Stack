@@ -1,38 +1,33 @@
 import { date, z } from "zod";
 
 import { router, publicProcedure } from "../trpc";
+import { protectedProcedure } from "../trpc";
 
 export const exampleRouter = router({
-  hello: publicProcedure
-    .input(z.object({ text: z.string().nullish() }).nullish())
-    .query(({ input }) => {
-      return {
-        greetings: `Hello ${input?.text ?? "world"}`,
-      };
-    }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
-  olaMundo: publicProcedure.query(async ({ ctx }) => {
-    const nome = await ctx.prisma.teste.findMany();
-
-    return {
-      greetings: nome,
-    };
-  }),
-  addMsg: publicProcedure
+ 
+  addMsg: protectedProcedure
     .input(z.object({ msg: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const ret = await ctx.prisma.teste.create({
+      const ret = await ctx.prisma.notas.create({
         data: {
-          msg: input.msg,
-        },
+          msg : input.msg,
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+              
+            }
+          }
+        }
       });
 
       return ret;
     }),
-  allMsgs: publicProcedure.query(async ({ ctx }) => {
-    const msgs = await ctx.prisma.teste.findMany();
+  allMsgs: protectedProcedure.query(async ({ ctx }) => {
+    const msgs = await ctx.prisma.notas.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      }
+    });
     return msgs;
   }),
 
@@ -43,7 +38,7 @@ export const exampleRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const resp = await ctx.prisma.teste.delete({
+      const resp = await ctx.prisma.notas.delete({
         where: {
           id: input.id,
         },
