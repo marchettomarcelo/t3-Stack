@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { router, publicProcedure } from "../trpc";
+import { router } from "../trpc";
 import { protectedProcedure } from "../trpc";
 
 export const exampleRouter = router({
@@ -29,7 +29,7 @@ export const exampleRouter = router({
     return msgs;
   }),
 
-  deleteMsg: publicProcedure
+  deleteMsg: protectedProcedure
     .input(
       z.object({
         id: z.string(),
