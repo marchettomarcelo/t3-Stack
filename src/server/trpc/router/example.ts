@@ -28,6 +28,22 @@ export const exampleRouter = router({
     });
     return msgs;
   }),
+  editMessage: protectedProcedure.input(
+    z.object({
+      id: z.string(),
+      msg: z.string(),
+    })
+  ).mutation(async ({ ctx, input }) => {
+    const resp = await ctx.prisma.notas.update({
+      where: {
+        id: input.id,
+      },
+      data: {
+        msg: input.msg,
+      },
+    });
+    return resp;
+  }),
 
   deleteMsg: protectedProcedure
     .input(
