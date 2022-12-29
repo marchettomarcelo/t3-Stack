@@ -46,7 +46,7 @@ const Home: NextPage = () => {
         <div className="flex h-96 w-9/12 flex-col gap-4 overflow-y-scroll">
           {data &&
             data?.map((mensagem) => {
-              return <Nota mensagem={mensagem} />;
+              return <Nota mensagem={mensagem} key={mensagem.id} />;
             })}
         </div>
         <button
